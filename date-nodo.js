@@ -5,7 +5,21 @@ const isBefore = require('date-fns/is_before');
 
 class DateNodo {
   constructor(options = {}) {
-    this.format = options.format || 'YYYY-MM-DD';
+    Object.defineProperties(this, {
+      format: {
+        value: options.format || 'YYYY-MM-DD',
+        configurable: false,
+        enumerable: true,
+        writable: false
+      },
+      reference: {
+        value: options.reference || 'day',
+        configurable: false,
+        enumerable: true,
+        writable: false,
+      }
+    })
+
     this.store = new Map();
   }
 
