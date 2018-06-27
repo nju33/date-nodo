@@ -2,10 +2,12 @@
   "name": "date-nodo",
   "version": "0.0.1",
   "main": "date-nodo.js",
+  "types": "date-nodo.d.ts",
   "repository": "nju33/date-nodo",
   "author": "nju33 <nju33.ki@gmail.com>",
   "license": "MIT",
   "fiels": [
+    "date-nodo.d.ts",
     "date-nodo.js"
   ],
   "keywords": [
