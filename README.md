@@ -1,5 +1,7 @@
 # date nodo
 
+[![CircleCI](https://circleci.com/gh/nju33/date-nodo.svg?style=svg)](https://circleci.com/gh/nju33/date-nodo)
+
 ## Example
 
 ```js
