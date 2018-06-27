@@ -1,13 +1,17 @@
 const differenceInCalendarDays = require('date-fns/difference_in_calendar_days');
+const getDate = require('date-fns/get_date');
 const addDays = require('date-fns/add_days');
+const addHours = require('date-fns/add_hours');
+const setHours = require('date-fns/set_hours');
+const getHours = require('date-fns/get_hours');
 const format = require('date-fns/format');
 const isBefore = require('date-fns/is_before');
 
 class DateNodo {
-  constructor(options = {}) {
+  constructor(options = {reference: 'day'}) {
     Object.defineProperties(this, {
       format: {
-        value: options.format || 'YYYY-MM-DD',
+        value: options.format || options.reference === 'day' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH',
         configurable: false,
         enumerable: true,
         writable: false
@@ -23,28 +27,61 @@ class DateNodo {
     this.store = new Map();
   }
 
+  isReferenceDay() {
+    return this.reference === 'day';
+  }
+
+  isReferenceHour() {
+    return this.reference === 'hour';
+  }
+
   clear() {
     this.store = new Map();
 
     return this;
   }
 
-  getDiffLength(range) {
+  getDiffDaysLength(range) {
     return differenceInCalendarDays(range[1], range[0]);
   }
 
-  addRange(range) {
-    const diffLength = this.getDiffLength(range);
+  getDiffHoursLength(range, day, daysLength) {
+    const from = getHours(range[0]);
+    const to = getHours(range[1])
+    if (this.isReferenceHour()) {
+      if (getDate(range[0]) === getDate(range[1])) {
+        return to - from;
+      } else if (day === daysLength) {
+        return from;
+      }
 
-    for (let adjustment = 0; adjustment <= diffLength; adjustment++) {
-      const formattedDate = format(
-        addDays(range[0], adjustment),
-        this.format
-      );
-      if (this.store.has(formattedDate)) {
-        this.store.set(formattedDate, this.store.get(formattedDate) + 1);
-      } else {
-        this.store.set(formattedDate, 1);
+      return 23 - from;
+    }
+
+    return 0;
+  }
+
+  addRange(range) {
+    const diffDaysLength = this.getDiffDaysLength(range);
+
+    for (let adjustmentDay = 0; adjustmentDay <= diffDaysLength; adjustmentDay++) {
+      let currentDay = addDays(range[0], adjustmentDay);
+      if (adjustmentDay > 0) {
+        currentDay = setHours(currentDay, 0);
+      }
+
+      const hoursLength = this.getDiffHoursLength(range, adjustmentDay, diffDaysLength);
+      for (let adjustmentHour = 0; adjustmentHour <= hoursLength; adjustmentHour++) {
+        const formattedDate = format(
+          addHours(currentDay, adjustmentHour),
+          this.format
+        );
+  
+        if (this.store.has(formattedDate)) {
+          this.store.set(formattedDate, this.store.get(formattedDate) + 1);
+        } else {
+          this.store.set(formattedDate, 1);
+        }
       }
     }
 
@@ -58,19 +95,28 @@ class DateNodo {
   }
 
   removeRange(range) {
-    const diffLength = this.getDiffLength(range);
+    const diffDaysLength = this.getDiffDaysLength(range);
 
-    for (let adjustment = 0; adjustment <= diffLength; adjustment++) {
-      const formattedDate = format(
-        addDays(range[0], adjustment),
-        this.format
-      );
-      if (this.store.has(formattedDate)) {
-        const count = this.store.get(formattedDate);
-        this.store.set(formattedDate, count - 1);
+    for (let adjustmentDay = 0; adjustmentDay <= diffDaysLength; adjustmentDay++) {
+      let currentDay = addDays(range[0], adjustmentDay);
+      if (adjustmentDay > 0) {
+        currentDay = setHours(currentDay, 0);
+      }
 
-        if (count === 1) {
-          this.store.delete(formattedDate);
+      const hoursLength = this.getDiffHoursLength(range, adjustmentDay, diffDaysLength);
+      for (let adjustmentHour = 0; adjustmentHour <= hoursLength; adjustmentHour++) {
+        const formattedDate = format(
+          addHours(currentDay, adjustmentHour),
+          this.format
+        );
+
+        if (this.store.has(formattedDate)) {
+          const count = this.store.get(formattedDate);
+          this.store.set(formattedDate, count - 1);
+  
+          if (count === 1) {
+            this.store.delete(formattedDate);
+          }
         }
       }
     }
