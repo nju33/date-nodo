@@ -12,7 +12,8 @@ const ranges = [
 ]
 
 const dateNodo = new DateNodo({
-  format: 'YYYY-MM-DD' // default
+  format: 'YYYY-MM-DD', // default
+  by: 'day'
 });
 
 console.log(

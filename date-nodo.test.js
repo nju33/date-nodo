@@ -6,7 +6,7 @@ describe('date-nodo', () => {
 
   beforeEach(() => {
     dateNodo = new DateNodo();
-    dateNodoWithHour = new DateNodo({reference: 'hour'});
+    dateNodoWithHour = new DateNodo({by: 'hour'});
   });
 
   test('addRange', () => {

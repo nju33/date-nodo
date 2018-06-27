@@ -8,16 +8,16 @@ const format = require('date-fns/format');
 const isBefore = require('date-fns/is_before');
 
 class DateNodo {
-  constructor(options = {reference: 'day'}) {
+  constructor(options = {by: 'day'}) {
     Object.defineProperties(this, {
       format: {
-        value: options.format || options.reference === 'day' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH',
+        value: options.format || options.by === 'day' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH',
         configurable: false,
         enumerable: true,
         writable: false
       },
-      reference: {
-        value: options.reference || 'day',
+      by: {
+        value: options.by || 'day',
         configurable: false,
         enumerable: true,
         writable: false,
@@ -27,12 +27,8 @@ class DateNodo {
     this.store = new Map();
   }
 
-  isReferenceDay() {
-    return this.reference === 'day';
-  }
-
-  isReferenceHour() {
-    return this.reference === 'hour';
+  isDivisionByHour() {
+    return this.by === 'hour';
   }
 
   clear() {
@@ -48,7 +44,7 @@ class DateNodo {
   getDiffHoursLength(range, day, daysLength) {
     const from = getHours(range[0]);
     const to = getHours(range[1])
-    if (this.isReferenceHour()) {
+    if (this.isDivisionByHour()) {
       if (getDate(range[0]) === getDate(range[1])) {
         return to - from;
       } else if (day === daysLength) {

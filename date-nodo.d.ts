@@ -1,21 +1,19 @@
 declare module 'date-nodo' {
   interface DateNodoOptions {
     format: string,
-    reference?: 'day' | 'hour',
+    by: 'day' | 'hour',
   }
 
   type Range = [string, string];
 
   class DateNodo {
     readonly format: string;
-    readonly reference: 'day' | 'hour';
+    readonly by: 'day' | 'hour';
     store: Map<string, number>;
 
     constructor(options?: Partial<DateNodoOptions>)
 
-    isReferenceDay(): boolean;
-  
-    isReferenceHour(): boolean;
+    isDivisionByHour(): boolean;
 
     getDiffDaysLength(range: Range): number;
   
