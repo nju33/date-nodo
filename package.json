@@ -1,6 +1,6 @@
 {
   "name": "date-nodo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "date-nodo.js",
   "types": "date-nodo.d.ts",
   "repository": "nju33/date-nodo",
